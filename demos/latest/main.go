@@ -10,12 +10,12 @@ import (
 )
 
 func main() {
-	var N uint
+	var N int
 	var seed int64
 	var printSome int
 	var numCPU int
 
-	flag.UintVar(&N, "N", 1000000, "number of work items")
+	flag.IntVar(&N, "N", 1000000, "number of work items")
 	flag.Int64Var(&seed, "Seed", 1, "random generator seed")
 	flag.IntVar(&printSome, "PrintSome", 0, "print first num values of result to verify")
 	flag.IntVar(&numCPU, "NumCPU", runtime.NumCPU(), "number of CPUs to use")
@@ -26,7 +26,7 @@ func main() {
 	// initialize input array of N values
 	rand.Seed(seed)
 	inputArray := make([]float64, N)
-	for i := uint(0); i < N; i++ {
+	for i := 0; i < N; i++ {
 		inputArray[i] = 10 * (rand.Float64() - 0.5) // -5 to 5
 	}
 
@@ -35,7 +35,7 @@ func main() {
 
 	// execute loop
 	startTime := time.Now()
-	for i := uint(0); i < N; i++ {
+	for i := 0; i < N; i++ {
 		outputArray[i] = sinc(inputArray[i] * math.Pi)
 	}
 	stopTime := time.Now()
