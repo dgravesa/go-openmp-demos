@@ -38,16 +38,11 @@ func main() {
 	startTime := time.Now()
 	var wg sync.WaitGroup
 	wg.Add(numCPU)
-	itemsPerGR := N / numCPU
 	for grID := 0; grID < numCPU; grID++ {
 		go func(grID int) {
 			defer wg.Done()
 			// compute contiguous index range
-			firstIndex := grID * itemsPerGR
-			lastIndex := (grID + 1) * itemsPerGR
-			if lastIndex > N {
-				lastIndex = N
-			}
+			firstIndex, lastIndex := computeIndexBlock(grID, N, numCPU)
 			// execute loop on contiguous block
 			for i := firstIndex; i < lastIndex; i++ {
 				outputArray[i] = sinc(inputArray[i] * math.Pi)
@@ -73,4 +68,26 @@ func sinc(x float64) float64 {
 		return 1.0
 	}
 	return math.Sin(x) / x
+}
+
+func computeIndexBlock(grID, N, numCPU int) (int, int) {
+	div := N / numCPU
+	mod := N % numCPU
+
+	numWorkItems := div
+	if grID < mod {
+		numWorkItems++
+	}
+
+	firstIndex := grID*div + minInt(grID, mod)
+	lastIndex := firstIndex + numWorkItems
+
+	return firstIndex, lastIndex
+}
+
+func minInt(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
