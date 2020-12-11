@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     // execute loop
     omp_set_num_threads(numThreads);
     auto startTime = std::chrono::system_clock::now();
-    #pragma omp parallel for shared(inputVec, outputVec, N)
+    #pragma omp parallel for
     for (int i = 0; i < N; i++) {
         outputVec[i] = sinc(inputVec[i] * M_PI);
     }
