@@ -16,6 +16,9 @@ const Option options[] = {
 };
 
 double sinc(double x) {
+    if (x == 0.0) {
+        return 1.0;
+    }
     return sin(x) / x;
 }
 

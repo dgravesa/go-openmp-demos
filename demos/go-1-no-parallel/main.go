@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"runtime"
 	"time"
 )
 
@@ -13,15 +12,11 @@ func main() {
 	var N int
 	var seed int64
 	var printSome int
-	var numCPU int
 
-	flag.IntVar(&N, "N", 1000000, "number of work items")
+	flag.IntVar(&N, "N", 10000000, "number of work items")
 	flag.Int64Var(&seed, "Seed", 1, "random generator seed")
 	flag.IntVar(&printSome, "PrintSome", 0, "print first num values of result to verify")
-	flag.IntVar(&numCPU, "NumCPU", runtime.NumCPU(), "number of CPUs to use")
 	flag.Parse()
-
-	runtime.GOMAXPROCS(numCPU)
 
 	// initialize input array of N values
 	rand.Seed(seed)

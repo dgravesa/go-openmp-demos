@@ -17,7 +17,7 @@ func main() {
 	var printSome int
 	var numCPU int
 
-	flag.IntVar(&N, "N", 1000000, "number of work items")
+	flag.IntVar(&N, "N", 10000000, "number of work items")
 	flag.Int64Var(&seed, "Seed", 1, "random generator seed")
 	flag.IntVar(&printSome, "PrintSome", 0, "print first num values of result to verify")
 	flag.IntVar(&numCPU, "NumCPU", runtime.NumCPU(), "number of CPUs to use")
@@ -37,7 +37,7 @@ func main() {
 
 	// execute loop
 	startTime := time.Now()
-	parallel.For(N, func(i int) {
+	parallel.For(N, func(i, _ int) {
 		outputArray[i] = sinc(inputArray[i] * math.Pi)
 	})
 	stopTime := time.Now()
