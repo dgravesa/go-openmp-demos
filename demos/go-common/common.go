@@ -3,9 +3,13 @@ package common
 import (
 	"flag"
 	"fmt"
+	"log"
 	"math"
 	"math/rand"
+	"os"
 	"runtime"
+	"runtime/pprof"
+	"runtime/trace"
 	"time"
 )
 
@@ -21,6 +25,8 @@ var (
 	runSerial   bool
 	traceName   string
 	cpuProfName string
+	traceFile   *os.File
+	cpuProfFile *os.File
 
 	loopStartTime  time.Time
 	loopFinishTime time.Time
@@ -51,6 +57,62 @@ func initArrays() {
 	Results = make([]float64, N)
 }
 
+func initTrace() {
+	if traceName != "" {
+		var err error
+		traceFile, err = os.Create(traceName)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		err = trace.Start(traceFile)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
+
+func initCPUProfile() {
+	if cpuProfName != "" {
+		var err error
+		cpuProfFile, err = os.Create(cpuProfName)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		err = pprof.StartCPUProfile(cpuProfFile)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
+
+func stopTrace() {
+	if traceName != "" {
+		trace.Stop()
+		err := traceFile.Close()
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
+
+func stopCPUProfile() {
+	if cpuProfName != "" {
+		pprof.StopCPUProfile()
+		err := cpuProfFile.Close()
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
+
 func printResults() {
 	// print execution time
 	totalLoopDuration := loopFinishTime.Sub(loopStartTime)
@@ -68,11 +130,19 @@ func PreLoop() {
 
 	initArrays()
 
+	initTrace()
+
+	initCPUProfile()
+
 	loopStartTime = time.Now()
 }
 
 func PostLoop() {
 	loopFinishTime = time.Now()
+
+	stopTrace()
+
+	stopCPUProfile()
 
 	printResults()
 }
