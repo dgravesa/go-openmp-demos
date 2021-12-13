@@ -29,7 +29,7 @@ var (
 )
 
 func parseFlags() {
-	flag.IntVar(&N, "N", 1000000, "number of work items")
+	flag.IntVar(&N, "N", 10000000, "number of work items")
 	flag.IntVar(&NumCPU, "numgr", runtime.NumCPU(), "number of goroutines to use in parallel loop")
 	flag.Int64Var(&Params.seed, "seed", 1, "random generator seed")
 	flag.IntVar(&Params.printSome, "printsome", 0, "print first num values of result to verify")
